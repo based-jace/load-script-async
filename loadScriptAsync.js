@@ -140,3 +140,19 @@ function ExtractScripts(html){
     return(scripts);
 }
 
+// This was a test
+// v  v  v  v  v  v  v
+// fetch("/products/", {
+//     headers: {
+//         "X-Requested-With": "XMLHttpRequest"
+//     }
+// })
+// .then((response)=>{
+//     return response.text();
+// })
+// .then(html=>{
+//     let dp = new DOMParser();
+//     let h = dp.parseFromString(html, "text/html");
+
+//     ReplaceHtml(html, document.getElementsByClassName("main-cont")[0]);
+// });
