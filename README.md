@@ -1,7 +1,10 @@
 <a name="loadScriptAsync"></a>
 
 ## loadScriptAsync
-Allows loading html, including scripts - similarto jQuery's ".html()"
+Allows loading html, including scripts - similar
+to jQuery's ".html()"
+
+*Does not currently work with minified html or certain <script> src url edge cases*
 
 **Kind**: global class  
 **Author:**: footjohnson  
@@ -26,7 +29,10 @@ Replaces html on page with given html, executing scripts in the process.
 
 **Example**  
 ```js
-// html should be stringified HTML// domLocation would be given via something like document.getElementById("elementId");// returns trueloadScriptAsync.ReplaceHtml(html, domLocation)
+// html should be stringified HTML
+// domLocation would be given via something like document.getElementById("elementId");
+// returns true
+loadScriptAsync.ReplaceHtml(html, domLocation)
 ```
 <a name="loadScriptAsync+CheckForScripts"></a>
 
@@ -42,7 +48,9 @@ Checks if there are any script tags in the node
 
 **Example**  
 ```js
-// Returns whether a node or HTMLElement has script tags as children or grandchildren// returns trueloadScriptAsync.CheckForScripts(node)
+// Returns whether a node or HTMLElement has script tags as children or grandchildren
+// returns true
+loadScriptAsync.CheckForScripts(node)
 ```
 <a name="loadScriptAsync+PlaceElems"></a>
 
@@ -61,5 +69,6 @@ Recursively places html elements on the DOM
 
 **Example**  
 ```js
-// returns trueloadScriptAsync.PlaceElems()
+// returns true
+loadScriptAsync.PlaceElems()
 ```
