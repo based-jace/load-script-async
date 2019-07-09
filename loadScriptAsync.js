@@ -12,6 +12,8 @@ class loadScriptAsync{
     }
 
     // Creates necessary regular expressions
+    // This would be more efficient if the regex
+    // were generated prior with values needed, but this is fine
     CreateLSARegex(){
         class LSA_REGEX_Class{
             constructor(){
@@ -73,6 +75,13 @@ class loadScriptAsync{
 
     /**
         * Replaces html on page with given html, executing scripts in the process.
+        * 
+        * @example
+        * // html should be stringified HTML
+        * // domLocation would be given via something like document.getElementById("elementId");
+        * // returns true
+        * loadScriptAsync.ReplaceHtml(html, domLocation)
+        * 
         * @param {string} html Html to replace current html
         * @param {HTMLElement} domLocation Node whose html should be replaced
         * 
@@ -90,8 +99,8 @@ class loadScriptAsync{
             // Clears the given section of the dom
             domLocation.parentNode.replaceChild(domLocationCopy, domLocation);
 
-            this.PlaceElems(doc.head.childNodes, domLocationCopy, true);
-            this.PlaceElems(doc.body.childNodes, domLocationCopy);
+            this.PlaceElems(doc.head, domLocationCopy, true);
+            this.PlaceElems(doc.body, domLocationCopy, true);
         }
         catch(e){
             console.log(e);
@@ -102,6 +111,11 @@ class loadScriptAsync{
 
     /**
      * Checks if there are any script tags in the node
+     * 
+     * @example
+     * // Returns whether a node or HTMLElement has script tags as children or grandchildren
+     * // returns true
+     * loadScriptAsync.CheckForScripts(node)
      * 
      * @param {Node} node Node to check for scripts
      * 
@@ -114,20 +128,28 @@ class loadScriptAsync{
     /**
      * Recursively places html elements on the DOM
      * 
-     * @param {HTMLCollection} elems Elements to place on DOM
+     * @param {HTMLElement} element Element whose children should be placed on the DOM
      * @param {Node} domLocation Where to put the elements
+     * @param {boolean} checkScripts If the function should first check if any scripts tags
+     *                      are within the given elems. If there are, use innerHTML instead
+     * @param {boolean} isHead If html should be placed in the head of the document (not yet supported)
+     * 
+     * @example
+     * // returns true
+     * loadScriptAsync.PlaceElems()
      * 
      * @returns {boolean} True if success; false if failure
      */
-    PlaceElems(elems, domLocation, isHead = false, checkScripts = true){
+    PlaceElems(element, domLocation, checkScripts = true, isHead = false){
         // Checks if elems contain scripts. If not, just user innerHTML
         // Inspired by jQuery
         if(checkScripts){
-            if(!this.CheckForScripts(elems[0].parentNode)){
-                domLocation.innerHTML = elems;
+            if(!this.CheckForScripts(element)){
+                domLocation.innerHTML += element.innerHTML;
                 return true;
             }
         }
+        const elems = element.childNodes; // the element's nodes
         // Iterates through elements in array
         for(let elem of elems){       
             if(elem.tagName === "SCRIPT"){ // If element is a script
@@ -161,9 +183,10 @@ class loadScriptAsync{
                 catch(e){
                     console.log(elem);
                     console.log(e);
+                    return false;
                 }
             }
         }
+        return true;
     }
-
 }
