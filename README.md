@@ -6,6 +6,10 @@ to jQuery's ".html()"
 
 *Does not currently work with minified html or certain <script> src url edge cases*
 
+https://www.danielcrabtree.com/blog/25/gotchas-with-dynamically-adding-script-tags-to-html <br/> and <br/>
+https://stackoverflow.com/questions/8097026/how-to-run-javascript-in-html-loaded-via-ajax/8097325#8097325
+<br/> used as a reference - thanks guys!
+
 **Kind**: global class  
 **Author:**: footjohnson  
 
