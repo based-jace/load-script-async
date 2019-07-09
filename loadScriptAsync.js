@@ -1,4 +1,4 @@
-"strict mode"
+"use strict";
 
 /**
  * Allows loading html, including scripts - similar
