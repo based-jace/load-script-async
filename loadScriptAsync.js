@@ -7,72 +7,6 @@
  * @author: footjohnson
  */
 class loadScriptAsync{
-    constructor(){
-        this.CreateLSARegex();
-    }
-
-    // Creates necessary regular expressions
-    // This would be more efficient if the regex
-    // were generated prior with values needed, but this is fine
-    CreateLSARegex(){
-        class LSA_REGEX_Class{
-            constructor(){
-                this.SetFields();
-                this.CreateSrcRegEx();
-            }
-    
-            SetFields(){
-                // js file extensions
-                this.jsExts = ["js", "ts", "es", "es6", "ls", "sjs", "eg", "json",
-                "json5", "cs", "coffee", "coffee.md", "mjs"]
-    
-                // Initial match for script src
-                this.srcRegEx = "";
-                // To test when dividing scripts by src or embedded
-                this.testSrcRegEx = "";
-                // Removes the "<script" fluff before the src path/url
-                this.rmSrcBeginning = /(?!<script.*src=)["'].*/ui;
-    
-                // Initial match for embedded script
-                this.embedRegEx = /<script>[\s\S]*?<\/script>/gui;
-                // Only grabs actual script content (plus wrapping carats)
-                this.embedScriptContent = />+?[\s\S]*</ui;
-                // Declares for later use
-                this.combinedRegEx;
-            }
-    
-            CreateSrcRegEx(){ // Creates srcRegEx
-                // Creates the initial regex to test for script with a src
-                // by using the extensions from "jsExts"
-                for(let i = 0; i < this.jsExts.length; i++){
-                    this.srcRegEx += `<script.*src=["'].*.${this.jsExts[i]}["']?`;
-                    if(i != this.jsExts.length - 1){ // insert an "|" alternation if not at the end
-                        this.srcRegEx += "|";
-                    }
-                }
-    
-                this.srcRegEx = new RegExp(this.srcRegEx, "gui");
-    
-                // Creates testSrcRegEx
-                // Creates regex used to distinguish between src and embedded scripts
-                for(let i = 0; i < this.jsExts.length; i++){
-                    this.testSrcRegEx += `^<script.*src=["'].*.${this.jsExts[i]}["'](?!.*<)`;
-                    if(i != this.jsExts.length - 1){ // insert an "|" alternation if not at the end
-                        this.testSrcRegEx += "|";
-                    }
-                }
-                this.testSrcRegEx = new RegExp(this.testSrcRegEx, "ui");
-                
-                // Combines srcRegEx and embedRegEx to initally search/grab all script tags from html
-                // Does not currently support minified html
-                // Also doesn't work in some edge cases that have urls with
-                // given extensions (i.e. ".js") and a " or ' within the src url
-                this.combinedRegEx = new RegExp("(" + this.srcRegEx.source + ")|(" + this.embedRegEx.source + ")", "gui");
-            }
-        }
-        this.LSA_REGEX = new LSA_REGEX_Class();
-    }
-
     /**
         * Replaces html on page with given html, executing scripts in the process.
         * 
@@ -91,7 +25,7 @@ class loadScriptAsync{
         try{
             const dp = new DOMParser();
             // parses html from DOM
-            const doc = dp.parseFromString(html.toString(), "text/html");
+            const doc = dp.parseFromString(html, "text/html");
 
             // Clears current element given by "domLocation"
             // Clones the dom location
@@ -122,7 +56,7 @@ class loadScriptAsync{
      * @returns {boolean} True if it contains scripts; false if it doesn't
      */
     CheckForScripts(node){
-        return (node.innerHTML.match(this.LSA_REGEX.combinedRegEx) ? true : false);
+        return (node.innerHTML.match(/<script[\s\S]*?>[\s\S]*?<\/script>/ui) ? true : false);
     }
 
     /**
@@ -149,9 +83,10 @@ class loadScriptAsync{
                 return true;
             }
         }
-        const elems = element.childNodes; // the element's nodes
-        // Iterates through elements in array
-        for(let elem of elems){       
+        // console.log(element.childNodes);
+        
+        const elems = element.childNodes; // the element's nodes 
+        for(let elem of elems){    
             if(elem.tagName === "SCRIPT"){ // If element is a script
                 const script = document.createElement("script"); // Creates a new script element
                 const src = elem.src; // Grabs src, if it exists
@@ -173,7 +108,7 @@ class loadScriptAsync{
                             domLocation.appendChild(elemCopy); // Append the childless element to the DOM
                             
                             // Recurse with the elems child nodes and 
-                            this.PlaceElems(elem.childNodes, elemCopy, isHead,  false);
+                            this.PlaceElems(elem, elemCopy, isHead,  false);
                         }
                         else{ // If 0 child elements
                             domLocation.appendChild(elem); // Append the element to the DOM
@@ -181,7 +116,7 @@ class loadScriptAsync{
                     }
                 }
                 catch(e){
-                    console.log(elem);
+                    // console.log(elem);
                     console.log(e);
                     return false;
                 }
