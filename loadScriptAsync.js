@@ -172,8 +172,8 @@ class loadScriptAsync{
                             const elemCopy = elem.cloneNode(false); // Clone the element
                             domLocation.appendChild(elemCopy); // Append the childless element to the DOM
                             
-                            // Recurse with the elems child nodes and 
-                            this.PlaceElems(elem.childNodes, elemCopy, isHead,  false);
+                            // Recurse with the elems child nodes and the location on the dom
+                            this.PlaceElems(elem, elemCopy, false, isHead);
                         }
                         else{ // If 0 child elements
                             domLocation.appendChild(elem); // Append the element to the DOM
