@@ -83,7 +83,6 @@ class loadScriptAsync{
                 return true;
             }
         }
-        // console.log(element.childNodes);
         
         const elems = element.childNodes; // the element's nodes 
         for(let elem of elems){    
@@ -101,22 +100,19 @@ class loadScriptAsync{
             }
             else{ // If not a script
                 try{
-                    // If elem contains child elements
-                    if(elem.children !== undefined){ // If elem has the "children" property
-                        if (elem.children.length > 0){ // If elem has at least 1 child
-                            const elemCopy = elem.cloneNode(false); // Clone the element
-                            domLocation.appendChild(elemCopy); // Append the childless element to the DOM
-                            
-                            // Recurse with the elems child nodes and 
-                            this.PlaceElems(elem, elemCopy, isHead,  false);
-                        }
-                        else{ // If 0 child elements
-                            domLocation.appendChild(elem); // Append the element to the DOM
-                        }
+                    // If elem contains child elements ()
+                    if(elem.children !== undefined){ // If elem has the "children" property (if elem is not a textNode)
+                        const elemCopy = elem.cloneNode(false); // Clone the element
+                        domLocation.appendChild(elemCopy); // Append the childless element to the DOM
+                        
+                        // Recurse with the elems child nodes and 
+                        this.PlaceElems(elem, elemCopy, isHead,  false);
+                    }
+                    else{ // If element is a text node
+                        domLocation.appendChild(elem.cloneNode(true));
                     }
                 }
                 catch(e){
-                    // console.log(elem);
                     console.log(e);
                     return false;
                 }
